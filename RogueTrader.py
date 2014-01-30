@@ -102,7 +102,7 @@ class CalcPage(webapp2.RequestHandler):
         
         armour = 12
         dmg_bonus = int(dmg_bonus)
-        while (armour < 21):
+        while (armour < 25):
             count = 0.0
             total_dmg_mc = 0.0
             total_dmg_la = 0.0
@@ -116,13 +116,13 @@ class CalcPage(webapp2.RequestHandler):
                 if (type == 'LA'):
                     total_dmg_la += DMG_la(dmg_bonus, deg, armour)
             if (type == 'MC'):
-                result = Result(average_mc = total_dmg_mc/count, average_marc = total_dmg_marc/count, armour = armour)
+                result = Result(average_mc = total_dmg_mc/count, average_marc = total_dmg_marc/count, average_la = total_dmg_la/count, armour = armour)
             if (type == 'LA'):
                 result = Result(average_la = total_dmg_la/count, armour = armour)
             result.put()          
             armour += 1
         
-        dmg_query = result.query().order(Result.armour)
+        dmg_query = result.query(ndb.AND(Result.armour > 11, ndb.AND(Result.armour < 21))).order(Result.armour)
         
         template_values = {
             'BS': BS,
