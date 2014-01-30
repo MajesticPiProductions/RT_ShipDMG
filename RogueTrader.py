@@ -73,6 +73,7 @@ def DMG_marc(dmg, deg, arm):
 class MainPage(webapp2.RequestHandler):
 
     def get(self):
+        ndb.delete_multi(Result.query().fetch(keys_only=True))
         weapons = Weapon.query().order(Weapon.number)
         template_values = {
             'weapons': weapons,
@@ -85,17 +86,18 @@ class CalcPage(webapp2.RequestHandler):
     def post(self):
         BS = int(self.request.get('BS'))
         choice = int(self.request.get('choice'))
-        chosen_test = Weapon.query(Weapon.number == 1).fetch(1)
+        chosen_test = Weapon.query(Weapon.number == choice).fetch(1)
         
+                
         for property in chosen_test:
             name = property.name
             type = property.type
             strength = int(property.strength)
             dmg_bonus = int(property.dmg_bonus)
-            
+        
         if (type == 'MC'): chosen_type = 'Macro-Cannon'
         if (type == 'LA'): chosen_type = 'Lance'
-        weapon1 = str(name)+ '-' + chosen_type + '\tStrength: ' + str(strength) + '\tDamage: 1d10+' + str(dmg_bonus)
+        weapon_choice = str(name)+ '-' + chosen_type + '\tStrength: ' + str(strength) + '\tDamage: 1d10+' + str(dmg_bonus)
         
         
         armour = 12
@@ -120,16 +122,13 @@ class CalcPage(webapp2.RequestHandler):
             result.put()          
             armour += 1
         
-        dmg_query = result.query().fetch(30)
+        dmg_query = result.query().order(Result.armour)
         
-        armour = 12  
-        
-        ndb.delete_multi(result.query().fetch(keys_only=True))
-        ndb.delete_multi(Weapon.query().fetch(keys_only=True))
-                
         template_values = {
+            'BS': BS,
+            'type': type,
             'dmg_query': dmg_query,
-            'weapon1': weapon1,
+            'weapon_choice': weapon_choice,
         }
 
         template = JINJA_ENVIRONMENT.get_template('calc.html')

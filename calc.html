@@ -2,17 +2,36 @@
 {% autoescape true %}
 <html>
   <body>
-    {{ test1 }} <br>
-    {{ test2 }} <br>
-    {{ weapon1 }}
+    {{ weapon_choice }}
     <br>
-    {% for dmg in dmg_query %}
-        {{ dmg.armour }} <br> {{ dmg.average_mc }} <br> {{ dmg.average_marc }}<br><br>
-    {% endfor %}
+    At Ballistic Skill:  {{ BS }}
+    <br><br>
+    {% if type == "MC" %}
+    <table border="1">
+      <tr>
+        <th>Armour</th><th>Damage normal</th><th>Damage by Marc</th>
+      </tr>
+      {% for dmg in dmg_query %}
+        <tr>
+          <td>{{ dmg.armour }}</td><td>{{ dmg.average_mc }}</td><td>{{ dmg.average_marc }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
     
-    {% for Armour in dmg_marc_dict %}
-        {{ Armour, dmg_marc_dict[Armour] }}<br>
-    {% endfor %}
+    {% if type == "LA" %}
+    <table border="1">
+      <tr>
+        <th>Armour</th><th>Damage</th>
+      </tr>
+      {% for dmg in dmg_query %}
+        <tr>
+          <td>{{ dmg.armour }}</td><td>{{ dmg.average_la }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+    
     <form action="/" method="get">
         <div><input type="submit" value="Return"></div>
     </form>
