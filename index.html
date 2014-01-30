@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+  <body>
+    
+    <form  action="/calc" method="post">
+      {{ test }}<br>
+      <div>Ballistic Skill: <input value="" name="BS"></div>
+      <div>Number of Your Weapon: <input value="" name="choice"></div>
+      <div><input type="submit" value="Calculate"></div>
+    </form><br>
+    
+    <form  action="/change" method="post">
+      <br>
+      <div><input type="submit" value="Change Weapons"></div>
+    </form><br>
+    List
+    <table border="1">
+      <tr>
+        <td>Number</td><td>Name</td><td>Strength</td><td>Damage</td>
+      </tr>
+        {% for weapon in weapons %}
+          <tr><td>{{ weapon.number }}</td><td>{{ weapon.name }}</td><td>+{{ weapon.strength }}</td><td>1d10+{{ weapon.dmg_bonus }}</td></tr>
+        {% endfor %}
+    </table>
+            
+  </body>
+</html>
+{% endautoescape %}

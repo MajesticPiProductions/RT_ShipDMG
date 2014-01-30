@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+  <body>
+    
+    <form action="/" method="get">
+        <div><input type="submit" value="Return"></div>
+    </form>
+    <br>
+    Test 1:
+    
+    {% for item in testa %}
+        {{ item }}<br>
+    {% endfor %}
+    
+    <br><br>
+    Test 2:<br>
+    <table border="1">
+    <tr>
+    <td>Number</td><td>Name</td><td>Strength</td><td>Damage</td>
+    </tr>
+    {% for weapon in weapons %}
+        <tr><td>{{ weapon.number }}</td><td>{{ weapon.name }}</td><td>+{{ weapon.strength }}</td><td>1d10+{{ weapon.dmg_bonus }}</td></tr>
+    {% endfor %}
+    </table>
+    <br><br>
+    New Weapon:
+    <br>
+    
+    <form  action="/new_weapon" method="post">
+    <table border="1">
+      <tr>
+        <td>Type (LA or MC)</td><td>Name</td><td>Strength</td><td>Damage</td>
+      </tr>
+      <tr>
+        <td><input value="" name="new_type"></td>
+        <td><input value="" name="new_name"></td>
+        <td><input value="" name="new_strength"></td>
+        <td><input value="" name="new_dmg_bonus"></td>
+      </tr>
+    </table>
+      <div><input type="submit" value="Submit new Weapon"></div>
+    </form>
+      <br>
+    <form action="/reset" method="post">
+        <div><input type="submit" value="Reset Weapons"></div>
+    </form>
+    
+  </body>
+</html>
+{% endautoescape %}

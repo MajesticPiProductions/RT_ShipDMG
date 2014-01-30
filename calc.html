@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+  <body>
+    {{ test1 }} <br>
+    {{ test2 }} <br>
+    {{ weapon1 }}
+    <br>
+    {% for dmg in dmg_query %}
+        {{ dmg.armour }} <br> {{ dmg.average_mc }} <br> {{ dmg.average_marc }}<br><br>
+    {% endfor %}
+    
+    {% for Armour in dmg_marc_dict %}
+        {{ Armour, dmg_marc_dict[Armour] }}<br>
+    {% endfor %}
+    <form action="/" method="get">
+        <div><input type="submit" value="Return"></div>
+    </form>
+
+  </body>
+</html>
+{% endautoescape %}
