@@ -4,37 +4,44 @@
   <body>
     {{ weapon_choice }}
     <br>
-    At Ballistic Skill:  {{ BS }}
-    <br><br>
-    {% if type == "MC" %}
-    <table border="1">
-      <tr>
-        <th>Armour</th><th>Damage normal</th><th>Damage by Marc</th>
-      </tr>
-      {% for dmg in dmg_query %}
+    {% for BS in bs_list %}
+        At Ballistic Skill:  {{ BS }}
+        <table border="1">
         <tr>
-          <td>{{ dmg.armour }}</td><td>{{ dmg.average_mc }}</td><td>{{ dmg.average_marc }}</td>
+        {% if type == "MC" %}
+            <th>Armour</th><th>Damage normal</th><th>Damage by Marc</th>
+        {% endif %}
+        {% if type == "LA" %}
+            <th>Armour</th><th>Damage</th>
+        {% endif %}
         </tr>
-      {% endfor %}
-    </table>
-    {% endif %}
+        
+        {% for dmg in dmg_query %}
+            {% if dmg.ballistic == BS %}
+                
+                {% if dmg.dmg_type == "MC" %}
+                    <tr>
+                      <td>{{ dmg.armour }}</td><td>{{ dmg.average_mc }}</td><td>{{ dmg.average_marc }}</td>
+                    </tr>
+                {% endif %}
+                
+                {% if dmg.dmg_type == "LA" %}
+                    <tr>
+                      <td>{{ dmg.armour }}</td><td>{{ dmg.average_la }}</td>
+                    </tr>
+                {% endif %}
+                
+                
+            {% endif %}
+        {% endfor %}
+        
+        </table>
+        {{ armour }}    <br>
+    {% endfor %}
+        <form action="/" method="get">
+            <div><input type="submit" value="Return"></div>
+        </form>
     
-    {% if type == "LA" %}
-    <table border="1">
-      <tr>
-        <th>Armour</th><th>Damage</th>
-      </tr>
-      {% for dmg in dmg_query %}
-        <tr>
-          <td>{{ dmg.armour }}</td><td>{{ dmg.average_la }}</td>
-        </tr>
-      {% endfor %}
-    </table>
-    {% endif %}
-    {{ armour }}    <br>
-    <form action="/" method="get">
-        <div><input type="submit" value="Return"></div>
-    </form>
 
   </body>
 </html>
