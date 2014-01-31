@@ -11,22 +11,26 @@
         <td>Upper Ballistic Skill:</td><td><input value="" name="BSu"></td>
       </tr><tr>
         <td>Interval:</td><td><input value="" name="Interval"></td>
-      </tr><tr>
-        <td>Number of Your Weapon:</td><td><input value="" name="choice"></td>
       </tr>
       </table>
-      <input type="submit" value="Calculate">
-    
-    </form><br><br>
-    List
+
+    Weapon List:
     <table border="1">
       <tr>
         <td>Number</td><td>Type</td><td>Name</td><td>Strength</td><td>Damage</td>
       </tr>
         {% for weapon in weapons %}
-          <tr><td>{{ weapon.number }}</td><td>{{ weapon.type }}</td><td>{{ weapon.name }}</td><td>+{{ weapon.strength }}</td><td>1d10+{{ weapon.dmg_bonus }}</td></tr>
+          <tr>
+              <td><input type="radio" name="choice" value="{{ weapon.number }}">{{ weapon.number }}</td>
+              <td>{{ weapon.type }}</td>
+              <td>{{ weapon.name }}</td>
+              <td>+{{ weapon.strength }}</td>
+              <td>1d10+{{ weapon.dmg_bonus }}</td>
+          </tr>
         {% endfor %}
     </table>
+        <input type="submit" value="Calculate">
+    </form>
     <form  action="/change" method="post">
       <br>
       <div><input type="submit" value="Change Weapons"></div>

@@ -1,6 +1,4 @@
 import os
-import cgi
-import urllib
 import random
 import csv
 
@@ -8,6 +6,7 @@ import jinja2
 import webapp2
 
 from google.appengine.ext import ndb
+
 
 class Result(ndb.Model):
     average_mc = ndb.FloatProperty()
@@ -20,7 +19,8 @@ class Result(ndb.Model):
     @classmethod
     def dmg_query_bs(cls, BS):
         return cls.query(cls.ballistic == BS).order(cls.armour)
-    
+
+
 class Weapon(ndb.Model):
     number = ndb.IntegerProperty()
     type = ndb.StringProperty()
@@ -31,50 +31,57 @@ class Weapon(ndb.Model):
     @classmethod
     def query_weapon(cls, choice):
         return cls.query(cls.number == choice).fetch()        
-    
+
+
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
+
 def random_roll(die_max=10):
         return int(random.random() * die_max + 1)
 
+
 def sum_of_multiple_rolls(nr_of_die, die_max=10):
     return sum([random_roll(die_max) for i in range(nr_of_die)])
-            
-def ToHit(BS, strength):
-    Degrees = 0
-    tohit = random_roll(100)
-    if (tohit <= BS):
-        hit = BS - tohit
-        Degrees = (hit - hit % 10 + 10) / 10
-    if (Degrees > strength):
-        Degrees = strength
-    return int(Degrees);
-    
-def DMG_mc(dmg, deg, arm):
-    sum = (sum_of_multiple_rolls(deg)+(deg*dmg))-arm
-    if (sum < 0):
-        sum = 0
-    return sum;
-    
-def DMG_la(dmg, deg, arm):
-    sum = sum_of_multiple_rolls(deg)+deg*dmg
-    if (sum < 0):
-        sum = 0
-    return sum;
-        
-def DMG_marc(dmg, deg, arm):
-    total = 0
-    sum = 0
-    while (deg > 0):
-        deg -= 1
-        tmp = random_roll(10) + dmg - arm + 12
-        if (tmp > 0):
-            sum += tmp
-    return sum;
-        
+
+
+def to_hit(ballistic_skill, weapon_strength):
+    degrees_of_success = 0
+    die_roll = random_roll(100)
+    if die_roll <= ballistic_skill:
+        margin_of_success = ballistic_skill - die_roll
+        degrees_of_success = (margin_of_success - margin_of_success % 10) / 10
+        if degrees_of_success > weapon_strength:
+            degrees_of_success = weapon_strength
+    return degrees_of_success
+
+
+def calculate_damage_macro_cannon(damage_bonus, degrees_of_success, armour_rating):
+    total_damage = sum_of_multiple_rolls(degrees_of_success) + degrees_of_success * damage_bonus - armour_rating
+    if total_damage < 0:
+        total_damage = 0
+    return total_damage
+
+
+def calculate_damage_lance(damage_bonus, degrees_of_success):
+    total_damage = sum_of_multiple_rolls(degrees_of_success) + degrees_of_success * damage_bonus
+    if total_damage < 0:
+        total_damage = 0
+    return total_damage
+
+
+def calculate_damage_marc_style(damage_bonus, degrees_of_success, armour_rating):
+    total_damage = 0
+    while degrees_of_success > 0:
+        degrees_of_success -= 1
+        damage_current_roll = random_roll(10) + damage_bonus - armour_rating + 12
+        if damage_current_roll > 0:
+            total_damage += damage_current_roll
+    return total_damage
+
+
 class MainPage(webapp2.RequestHandler):
 
     def get(self):
@@ -118,12 +125,12 @@ class CalcPage(webapp2.RequestHandler):
                 total_dmg_marc = 0.0
                 while (count < 10000):
                     count += 1
-                    deg = ToHit(BSl, strength)
+                    deg = to_hit(BSl, strength)
                     if (type == 'MC'):
-                        total_dmg_mc += DMG_mc(dmg_bonus, deg, armour)
-                        total_dmg_marc += DMG_marc(dmg_bonus, deg, armour)
+                        total_dmg_mc += calculate_damage_macro_cannon(dmg_bonus, deg, armour)
+                        total_dmg_marc += calculate_damage_marc_style(dmg_bonus, deg, armour)
                     elif (type == 'LA'):
-                        total_dmg_la += DMG_la(dmg_bonus, deg, armour)
+                        total_dmg_la += calculate_damage_lance(dmg_bonus, deg)
                 if (type == 'MC'):
                     test.append(total_dmg_mc)
                     armour_dict[armour] = {'org': total_dmg_mc / count, 'marc': total_dmg_marc / count}
