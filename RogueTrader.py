@@ -1,6 +1,4 @@
 import os
-import cgi
-import urllib
 import random
 import csv
 
