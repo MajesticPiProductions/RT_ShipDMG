@@ -4,7 +4,7 @@
   <body>
     {{ weapon_choice }}
     <br>
-    {% for BS in bs_list %}
+    {% for BS in bs_dict %}
         At Ballistic Skill:  {{ BS }}
         <table border="1">
         <tr>
@@ -16,23 +16,20 @@
         {% endif %}
         </tr>
         
-        {% for dmg in dmg_query %}
-            {% if dmg.ballistic == BS %}
-                
-                {% if dmg.dmg_type == "MC" %}
+        {% for armour in bs_dict[BS] %}
+                       
+                {% if type == "MC" %}
                     <tr>
-                      <td>{{ dmg.armour }}</td><td>{{ dmg.average_mc }}</td><td>{{ dmg.average_marc }}</td>
+                      <td>{{ armour }}</td><td>{{ bs_dict[BS][armour]['org'] }}</td><td>{{ bs_dict[BS][armour]['marc'] }}</td>
                     </tr>
                 {% endif %}
                 
-                {% if dmg.dmg_type == "LA" %}
+                {% if type == "LA" %}
                     <tr>
-                      <td>{{ dmg.armour }}</td><td>{{ dmg.average_la }}</td>
+                      <td>{{ armour }}</td><td>{{ bs_dict[BS][armour]['la'] }}</td>
                     </tr>
                 {% endif %}
-                
-                
-            {% endif %}
+               
         {% endfor %}
         
         </table>

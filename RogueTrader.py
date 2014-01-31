@@ -54,7 +54,7 @@ def ToHit(BS, strength):
     return int(Degrees);
     
 def DMG_mc(dmg, deg, arm):
-    sum = sum_of_multiple_rolls(deg)+deg*dmg-arm
+    sum = (sum_of_multiple_rolls(deg)+(deg*dmg))-arm
     if (sum < 0):
         sum = 0
     return sum;
@@ -89,8 +89,8 @@ class MainPage(webapp2.RequestHandler):
 class CalcPage(webapp2.RequestHandler):
 
     def post(self):
-        BSu = int(self.request.get('BSu'))
         BSl = int(self.request.get('BSl'))
+        BSu = int(self.request.get('BSu'))
         interval = int(self.request.get('Interval'))
         if (interval < 1): interval = 1
         choice = int(self.request.get('choice'))
@@ -106,14 +106,12 @@ class CalcPage(webapp2.RequestHandler):
         if (type == 'LA'): chosen_type = 'Lance'
         weapon_choice = str(name)+ '-' + chosen_type + '\tStrength: ' + str(strength) + '\tDamage: 1d10+' + str(dmg_bonus)
         
-        bs_list = []
-        dmg_bonus = int(dmg_bonus)
-        bs_count = 0
+        bs_dict = {}
+        armour_dict = {}
+        test = []
         while (BSl < (BSu + 1)):
-            bs_count += 1
-            bs_list.append(BSl)
             armour = 12
-            while (armour < 25):
+            while (armour < 21):
                 count = 0.0
                 total_dmg_mc = 0.0
                 total_dmg_la = 0.0
@@ -124,22 +122,22 @@ class CalcPage(webapp2.RequestHandler):
                     if (type == 'MC'):
                         total_dmg_mc += DMG_mc(dmg_bonus, deg, armour)
                         total_dmg_marc += DMG_marc(dmg_bonus, deg, armour)
-                    if (type == 'LA'):
+                    elif (type == 'LA'):
                         total_dmg_la += DMG_la(dmg_bonus, deg, armour)
                 if (type == 'MC'):
-                    result = Result(average_mc = total_dmg_mc/count, average_marc = total_dmg_marc/count, average_la = total_dmg_la/count, armour = armour, ballistic = BSl, dmg_type = type)
-                if (type == 'LA'):
-                    result = Result(average_la = total_dmg_la/count, armour = armour, ballistic = BSl, dmg_type = type)
-                result.put()          
+                    test.append(total_dmg_mc)
+                    armour_dict[armour] = {'org': total_dmg_mc / count, 'marc': total_dmg_marc / count}
+                elif (type == 'LA'):
+                    armour_dict[armour] = {'la': total_dmg_la / count}
+                
                 armour += 1
+            bs_dict.update({BSl: armour_dict})
             BSl += interval
         
-        dmg_query = result.query(ndb.AND(Result.armour > 11, ndb.AND(Result.armour < 21))).order(Result.armour)
-        
         template_values = {
-            'bs_list': bs_list,
+            'test': test,
             'type': type,
-            'dmg_query': dmg_query,
+            'bs_dict': bs_dict,
             'weapon_choice': weapon_choice,
         }
 
