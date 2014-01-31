@@ -132,7 +132,7 @@ class CalcPage(webapp2.RequestHandler):
                         total_dmg_mc += calculate_damage_macro_cannon(dmg_bonus, deg, armour)
                         total_dmg_marc += calculate_damage_marc_style(dmg_bonus, deg, armour)
                     if (type == 'LA'):
-                        total_dmg_la += calculate_damage_lance(dmg_bonus, deg, armour)
+                        total_dmg_la += calculate_damage_lance(dmg_bonus, deg)
                 if (type == 'MC'):
                     result = Result(average_mc = total_dmg_mc/count, average_marc = total_dmg_marc/count, average_la = total_dmg_la/count, armour = armour, ballistic = BSl, dmg_type = type)
                 if (type == 'LA'):
