@@ -44,28 +44,31 @@ def sum_of_multiple_rolls(nr_of_die, die_max=10):
     return sum([random_roll(die_max) for i in range(nr_of_die)])
 
 
-def to_hit(BS, strength):
-    Degrees = 0
-    tohit = random_roll(100)
-    if (tohit <= BS):
-        hit = BS - tohit
-        Degrees = (hit - hit % 10 + 10) / 10
-    if (Degrees > strength):
-        Degrees = strength
-    return int(Degrees);
-    
-def DMG_mc(dmg, deg, arm):
-    sum = sum_of_multiple_rolls(deg)+deg*dmg-arm
+def to_hit(ballistic_skill, weapon_strength):
+    degrees_of_success = 0
+    die_roll = random_roll(100)
+    if die_roll <= ballistic_skill:
+        margin_of_success = ballistic_skill - die_roll
+        degrees_of_success = (margin_of_success - margin_of_success % 10) / 10
+        if degrees_of_success > weapon_strength:
+            degrees_of_success = weapon_strength
+    return degrees_of_success
+
+
+def DMG_mc(dmg, deg, armour_rating):
+    sum = sum_of_multiple_rolls(deg)+deg*dmg-armour_rating
     if (sum < 0):
         sum = 0
-    return sum;
-    
+    return sum
+
+
 def DMG_la(dmg, deg, arm):
     sum = sum_of_multiple_rolls(deg)+deg*dmg
     if (sum < 0):
         sum = 0
-    return sum;
-        
+    return sum
+
+
 def DMG_marc(dmg, deg, arm):
     total = 0
     sum = 0
@@ -74,7 +77,7 @@ def DMG_marc(dmg, deg, arm):
         tmp = random_roll(10) + dmg - arm + 12
         if (tmp > 0):
             sum += tmp
-    return sum;
+    return sum
         
 class MainPage(webapp2.RequestHandler):
 
