@@ -35,13 +35,16 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
+
 def random_roll(die_max=10):
         return int(random.random() * die_max + 1)
 
+
 def sum_of_multiple_rolls(nr_of_die, die_max=10):
     return sum([random_roll(die_max) for i in range(nr_of_die)])
-            
-def ToHit(BS, strength):
+
+
+def to_hit(BS, strength):
     Degrees = 0
     tohit = random_roll(100)
     if (tohit <= BS):
@@ -118,7 +121,7 @@ class CalcPage(webapp2.RequestHandler):
                 total_dmg_marc = 0.0
                 while (count < 10000):
                     count += 1
-                    deg = ToHit(BSl, strength)
+                    deg = to_hit(BSl, strength)
                     if (type == 'MC'):
                         total_dmg_mc += DMG_mc(dmg_bonus, deg, armour)
                         total_dmg_marc += DMG_marc(dmg_bonus, deg, armour)
