@@ -170,8 +170,9 @@ class ChangePage(webapp2.RequestHandler):
 class DeleteWeapon(webapp2.RequestHandler):
 
     def post(self):
-        weapon_number = int(self.request.get('weapon_number'))
-        delete_weapon(weapon_number)
+        weapon_number = (self.request.get_all('delete_weapon'))
+        for weapons in weapon_number:
+            delete_weapon(int(weapons))
         template_values = {}
 
         template = JINJA_ENVIRONMENT.get_template('done.html')

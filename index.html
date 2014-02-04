@@ -24,7 +24,7 @@
         <td>Number</td><td>Type</td><td>Name</td><td>Strength</td><td>Damage</td>
       </tr>
         {% for weapon in weapons %}
-          <tr><td>{{ weapon.number }}</td><td>{{ weapon.type }}</td><td>{{ weapon.name }}</td><td>+{{ weapon.strength }}</td><td>1d10+{{ weapon.dmg_bonus }}</td></tr>
+          <tr><td>{{ weapon.number }}</td><td>{{ weapon.type }}</td><td>{{ weapon.name }}</td><td>{{ weapon.strength }}</td><td>1d10+{{ weapon.dmg_bonus }}</td></tr>
         {% endfor %}
     </table>
     <form  action="/change" method="post">

@@ -8,14 +8,19 @@
     </form>
     <br>
     Loaded Weapons:<br>
+    
+    <form  action="/delete_weapon" method="post">
     <table border="1">
-    <tr>
-    <td>Number</td><td>Name</td><td>Strength</td><td>Damage</td>
-    </tr>
-    {% for weapon in weapons %}
-        <tr><td>{{ weapon.number }}</td><td>{{ weapon.name }}</td><td>+{{ weapon.strength }}</td><td>1d10+{{ weapon.dmg_bonus }}</td></tr>
-    {% endfor %}
+        <tr>
+        <td>delete</td><td>Number</td><td>Name</td><td>Strength</td><td>Damage</td>
+        </tr>
+        {% for weapon in weapons %}
+            <tr><td><input type="checkbox" name="delete_weapon" value="{{ weapon.number }}"></td><td>{{ weapon.number }}</td><td>{{ weapon.name }}</td><td>{{ weapon.strength }}</td><td>1d10+{{ weapon.dmg_bonus }}</td></tr>
+        {% endfor %}
     </table>
+      <div><input type="submit" value="Delete Weapon"></div>
+    </form>
+    
     <br><br>
     New Weapon:
     <br>
@@ -26,31 +31,17 @@
         <td>Type (LA or MC)</td><td>Name</td><td>Strength</td><td>Damage</td>
       </tr>
       <tr>
-        <td><input value="" name="new_type"></td>
+        <td><input type="radio" name="new_type" value="MC">Macro-Cannon<br><input type="radio" name="new_type" value="LA">Lance</td>
         <td><input value="" name="new_name"></td>
         <td><input value="" name="new_strength"></td>
         <td><input value="" name="new_dmg_bonus"></td>
       </tr>
     </table>
-      <div><input type="submit" value="Submit new Weapon"></div>
+      <div><input type="submit" value="Submit new Weapon" name="add_new_weapon"></div>
     </form>
-      <br>
     
     <br><br>
-    Delete Weapon:
-    <br>
-    <form  action="/delete_weapon" method="post">
-    <table border="1">
-      <tr>
-        <td>Weapon Number</td>
-      </tr>
-      <tr>
-        <td><input value="" name="weapon_number"></td>
-      </tr>
-    </table>
-      <div><input type="submit" value="Delete Weapon"></div>
-    </form>
-      <br><br>
+   
     <form action="/reset" method="post">
         <div><input type="submit" value="Reset Weapons"></div>
     </form>
